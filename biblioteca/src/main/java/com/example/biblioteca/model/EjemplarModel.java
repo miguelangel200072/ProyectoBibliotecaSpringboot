@@ -5,6 +5,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Table;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
 @Entity
 @Table(name="EJEMPLAR")
@@ -14,7 +16,9 @@ public class EjemplarModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
-	private Integer id_libro;
+	@ManyToOne
+	@JoinColumn(name = "idLibro")
+	private LibroModel idLibro;
 	
 	public Integer getId() {
 		return id;
@@ -24,12 +28,12 @@ public class EjemplarModel {
 		this.id = id;
 	}
 
-	public Integer getId_libro() {
-		return id_libro;
+	public LibroModel getId_libro() {
+		return idLibro;
 	}
 
-	public void setId_libro(Integer id_libro) {
-		this.id_libro = id_libro;
+	public void setId_libro(LibroModel id_libro) {
+		this.idLibro = id_libro;
 	}
 
 
