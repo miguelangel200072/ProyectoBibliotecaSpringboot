@@ -10,15 +10,16 @@ import org.springframework.stereotype.Service;
 import com.example.biblioteca.model.AutorModel;
 import com.example.biblioteca.model.IdiomaModel;
 import com.example.biblioteca.model.LibroModel;
+import com.example.biblioteca.model.TemaModel;
 import com.example.biblioteca.repository.AutorRepository;
 import com.example.biblioteca.repository.IdiomaRepository;
 import com.example.biblioteca.repository.LibroRepository;
+import com.example.biblioteca.repository.TemaRepository;
 import com.example.biblioteca.service.LibroService;
 
 @Service
 public class LibroServiceImpl implements LibroService{
 	
-	// Inyectar el servicio
 	@Autowired
 	LibroRepository libroRepo;
 	
@@ -26,12 +27,17 @@ public class LibroServiceImpl implements LibroService{
 	AutorRepository autorRepo;
 	
 	@Autowired
-    private IdiomaRepository idiomaRepo; // Inyección del repositorio de Idioma
+    private IdiomaRepository idiomaRepo;
+	
+	@Autowired
+    TemaRepository temaRepo;
     
+
+
 	@Override
 	public LibroModel guardaLibro(LibroModel libro) {
 	    try {
-	        // Verifica que el idioma está configurado y existe
+	        // Verifica que el idioma está existe
 	        if (libro.getidIdioma() != null) {
 	            Optional<IdiomaModel> idiomaExistente = idiomaRepo.findById(libro.getidIdioma().getIdIdioma());
 	            if (idiomaExistente.isPresent()) {
@@ -42,24 +48,45 @@ public class LibroServiceImpl implements LibroService{
 	            }
 	        }
 
-	        // Maneja los autores
+	        // Manejo de los autores
+	        List<AutorModel> autoresGestionados = new ArrayList<>();
 	        if (libro.getAutores() != null) {
-	            List<AutorModel> autoresGestionados = new ArrayList<>();
 	            for (AutorModel autor : libro.getAutores()) {
 	                Optional<AutorModel> autorExistente = autorRepo.findById(autor.getIdAutor());
 	                if (autorExistente.isPresent()) {
 	                    autoresGestionados.add(autorExistente.get());
+	                } else {
+	                    System.out.println("[guardaLibro] Autor no encontrado: " + autor.getIdAutor());
+	                    return null;
 	                }
 	            }
-	            libro.setAutores(autoresGestionados);
 	        }
+	        libro.setAutores(autoresGestionados);
+
+	        // Manejo de los temas
+	        List<TemaModel> temasGestionados = new ArrayList<>();
+	        if (libro.getLst_temas() != null) {
+	            for (TemaModel tema : libro.getLst_temas()) {
+	                Optional<TemaModel> temaExistente = temaRepo.findById(tema.getIdTema());
+	                if (temaExistente.isPresent()) {
+	                    temasGestionados.add(temaExistente.get());
+	                } else {
+	                    System.out.println("[guardaLibro] Tema no encontrado: " + tema.getIdTema());
+	                    return null;
+	                }
+	            }
+	        }
+	        libro.setLst_temas(temasGestionados);
 
 	        return libroRepo.save(libro);
+
 	    } catch (Exception e) {
 	        System.out.println("[guardaLibro] exception: " + e.getMessage());
 	        return null;
 	    }
 	}
+
+
 
 
     
@@ -69,10 +96,8 @@ public class LibroServiceImpl implements LibroService{
 		LibroModel result = new LibroModel();
 		
 		try {
-			//result = libroRepo.getReferenceById(id);
 			result = libroRepo.findById(id).get();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			System.out.println("[getLibroByID] exception: " + e.getMessage());
 		}
 		
@@ -85,7 +110,6 @@ public class LibroServiceImpl implements LibroService{
 		try {
 			result = libroRepo.findAll();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			System.out.println("[getAllLibros] exception: " + e.getMessage());
 		}
 		return result;
@@ -104,35 +128,60 @@ public class LibroServiceImpl implements LibroService{
 	@Override
 	public LibroModel updateLibro(LibroModel libro) {
 	    try {
-	        // Verifica que el libro existe
-	        Optional<LibroModel> libroExistente = libroRepo.findById(libro.getIdLibro());
-	        if (libroExistente.isPresent()) {
-	            // Actualiza los campos del libro
-	            LibroModel libroActualizado = libroExistente.get();
-	            libroActualizado.setAnio(libro.getAnio());
-	            libroActualizado.setTitulo(libro.getTitulo());
-	            libroActualizado.setidIdioma(libro.getidIdioma());
-
-	            // Actualiza la lista de autores
-	            List<AutorModel> autoresActualizados = new ArrayList<>();
-	            for (AutorModel autor : libro.getAutores()) {
-	                AutorModel autorExistente = autorRepo.findById(autor.getIdAutor()).orElse(null);
-	                if (autorExistente != null) {
-	                    autoresActualizados.add(autorExistente);
+	        if (libroRepo.existsById(libro.getIdLibro())) {
+	            // Verifica que el idioma existe
+	            if (libro.getidIdioma() != null) {
+	                Optional<IdiomaModel> idiomaExistente = idiomaRepo.findById(libro.getidIdioma().getIdIdioma());
+	                if (idiomaExistente.isPresent()) {
+	                    libro.setidIdioma(idiomaExistente.get());
+	                } else {
+	                    System.out.println("[updateLibro] Idioma no encontrado: " + libro.getidIdioma().getIdIdioma());
+	                    return null;
 	                }
 	            }
-	            libroActualizado.setAutores(autoresActualizados);
 
-	            return libroRepo.save(libroActualizado);
+	            // Manejo de los autores
+	            List<AutorModel> autoresGestionados = new ArrayList<>();
+	            if (libro.getAutores() != null) {
+	                for (AutorModel autor : libro.getAutores()) {
+	                    Optional<AutorModel> autorExistente = autorRepo.findById(autor.getIdAutor());
+	                    if (autorExistente.isPresent()) {
+	                        autoresGestionados.add(autorExistente.get());
+	                    } else {
+	                        System.out.println("[updateLibro] Autor no encontrado: " + autor.getIdAutor());
+	                        return null;
+	                    }
+	                }
+	            }
+	            libro.setAutores(autoresGestionados);
+
+	            // Manejo de los temas
+	            List<TemaModel> temasGestionados = new ArrayList<>();
+	            if (libro.getLst_temas() != null) {
+	                for (TemaModel tema : libro.getLst_temas()) {
+	                    Optional<TemaModel> temaExistente = temaRepo.findById(tema.getIdTema());
+	                    if (temaExistente.isPresent()) {
+	                        temasGestionados.add(temaExistente.get());
+	                    } else {
+	                        System.out.println("[updateLibro] Tema no encontrado: " + tema.getIdTema());
+	                        return null;
+	                    }
+	                }
+	            }
+	            libro.setLst_temas(temasGestionados);
+
+
+	            return libroRepo.save(libro);
 	        } else {
-	            System.out.println("[updateLibro] Libro no encontrado");
-	            return null; // o lanzar excepción
+	            System.out.println("[updateLibro] El libro no existe con ID: " + libro.getIdLibro());
+	            return null;
 	        }
 	    } catch (Exception e) {
 	        System.out.println("[updateLibro] exception: " + e.getMessage());
-	        return null; // o lanzar excepción
+	        return null;
 	    }
 	}
+
 
 
 }

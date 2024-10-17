@@ -45,6 +45,23 @@ public class LibroModel {
     )
     @JsonIgnoreProperties("libros") // Evita problemas de recursión
     private List<AutorModel> autores;
+	
+	@ManyToMany(cascade = {CascadeType.ALL})
+    @JoinTable(
+        name = "LIBRO_TEMA",
+        joinColumns = @JoinColumn(name = "idLibro"),
+        inverseJoinColumns = @JoinColumn(name = "idTema")
+    )
+    @JsonIgnoreProperties("lst_libros")
+    private List<TemaModel> lst_temas;
+	
+	public List<TemaModel> getLst_temas() {
+        return lst_temas;
+    }
+
+    public void setLst_temas(List<TemaModel> lst_temas) {
+        this.lst_temas = lst_temas;
+    }
 
 	public List<AutorModel> getAutores() {
 		return autores;

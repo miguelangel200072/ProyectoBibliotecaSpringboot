@@ -23,7 +23,6 @@ public class AutorServiceImpl implements AutorService{
 		try {
 			result = autorRepo.save(autor);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			System.out.println("[guardaAutor] exception: " + e.getMessage());
 		}
 		
@@ -37,7 +36,6 @@ public class AutorServiceImpl implements AutorService{
 		try {
 			result = autorRepo.findById(id).get();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			System.out.println("[getAutorByID] exception: " + e.getMessage());
 		}
 		
@@ -51,7 +49,6 @@ public class AutorServiceImpl implements AutorService{
 		try {
 			result = autorRepo.findAll();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			System.out.println("[getAllAutores] exception: " + e.getMessage());
 		}
 		
@@ -63,7 +60,6 @@ public class AutorServiceImpl implements AutorService{
 		try {
 			autorRepo.deleteById(id);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			System.out.println("[deleteAutorByID] exception: " + e.getMessage());
 		}
 	}

@@ -31,7 +31,7 @@ public class SocioServiceImpl implements SocioService {
             for (EjemplarModel ejemplar : socio.getLst_ejemplares()) {
                 EjemplarModel managedEjemplar = ejemplarRepo.findById(ejemplar.getId()).orElse(null);
                 if (managedEjemplar != null) {
-                    ejemplares.add(managedEjemplar); // Solo añade si el ejemplar existe
+                    ejemplares.add(managedEjemplar);
                 }
             }
         }
@@ -39,7 +39,6 @@ public class SocioServiceImpl implements SocioService {
         // Asigna los ejemplares gestionados al socio
         socio.setLst_ejemplares(ejemplares);
 
-        // Guarda el socio en la base de datos
         return socioRepo.save(socio);
     }
 
@@ -85,11 +84,10 @@ public class SocioServiceImpl implements SocioService {
                 
                 // Verifica si la lista de ejemplares no es nula
                 if (socio.getLst_ejemplares() != null) {
-                    // Para cada ejemplar en la lista, busca el ejemplar en la base de datos
                     for (EjemplarModel ejemplar : socio.getLst_ejemplares()) {
                         EjemplarModel managedEjemplar = ejemplarRepo.findById(ejemplar.getId()).orElse(null);
                         if (managedEjemplar != null) {
-                            ejemplares.add(managedEjemplar); // Solo añade si el ejemplar existe
+                            ejemplares.add(managedEjemplar);
                         }
                     }
                 }
@@ -97,7 +95,6 @@ public class SocioServiceImpl implements SocioService {
                 // Asigna los ejemplares gestionados al socio
                 socio.setLst_ejemplares(ejemplares);
                 
-                // Actualiza el socio en la base de datos
                 result = socioRepo.save(socio);
             }
         } catch (Exception e) {
