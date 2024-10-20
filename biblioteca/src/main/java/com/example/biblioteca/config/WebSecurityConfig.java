@@ -23,24 +23,24 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf
-                .ignoringRequestMatchers("/auth/**") // Ignorar CSRF para rutas de autenticación
-            )
+            .csrf().disable() // Desactivar CSRF solo para pruebas, no recomendado en producción
             .authorizeRequests()
             .requestMatchers("/auth/**").permitAll() // Permitir acceso a las rutas de autenticación
             .anyRequest().authenticated() // Todas las demás rutas requieren autenticación
             .and()
-            .formLogin() // Habilitar el inicio de sesión con formulario
-            .and()
+            .httpBasic().and()
             .logout()
             .logoutUrl("/auth/logout") // URL para cerrar sesión
-            .logoutSuccessUrl("/auth/login?logout=true") // URL de redirección después de cerrar sesión
+            .logoutSuccessUrl("/auth/logout-success?logout=true") // URL de redirección después de cerrar sesión
             .invalidateHttpSession(true) // Invalidar sesión
             .clearAuthentication(true) // Limpiar autenticación
             .permitAll();
+ // Habilitar autenticación básica
 
         return http.build();
     }
+
+
 
 
 

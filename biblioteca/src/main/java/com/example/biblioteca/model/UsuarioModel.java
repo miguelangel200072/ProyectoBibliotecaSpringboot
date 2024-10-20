@@ -19,10 +19,19 @@ public class UsuarioModel implements UserDetails {
 
     private String username;
     private String password;
+    private String role;
 
     // Agrega otros campos según sea necesario
 
-    public Integer getId() {
+    public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
+	}
+
+	public Integer getId() {
 		return id;
 	}
 

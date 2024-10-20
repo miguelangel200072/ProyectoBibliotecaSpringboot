@@ -24,12 +24,17 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody UsuarioModel usuario) {
         try {
+            // Asegúrate de que el rol esté presente en la solicitud
+            if (usuario.getRole() == null || usuario.getRole().isEmpty()) {
+                return ResponseEntity.badRequest().body("El rol es requerido.");
+            }
             usuarioService.save(usuario);
             return ResponseEntity.status(HttpStatus.CREATED).body("Usuario registrado exitosamente!");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al registrar usuario: " + e.getMessage());
         }
     }
+
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UsuarioModel usuario) {
@@ -44,16 +49,14 @@ public class AuthController {
         }
     }
 
-    @GetMapping("/protected-resource")
-    public ResponseEntity<String> getProtectedResource() {
-        return ResponseEntity.ok("Este es un recurso protegido.");
-    }
     
     @GetMapping("/logout")
     public ResponseEntity<String> logout() {
         SecurityContextHolder.clearContext(); // Limpiar el contexto de seguridad
         return ResponseEntity.ok("Has cerrado sesión exitosamente. Puedes volver a la página de inicio."); // O redirigir a otra URL
     }
+    
+    
 
 }
 

@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.example.biblioteca.controller.Role;
 import com.example.biblioteca.model.UsuarioModel;
 import com.example.biblioteca.repository.UsuarioRepository;
 import com.example.biblioteca.service.UsuarioService;
@@ -36,6 +37,21 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
 
     public UsuarioModel save(UsuarioModel usuario) {
         usuario.setPassword(passwordEncoder.encode(usuario.getPassword())); // Encriptar contraseña
+        
+        // Validar rol
+        if (usuario.getRole() == null || usuario.getRole().isEmpty()) {
+            // Establecer un rol predeterminado si no se proporciona uno
+            usuario.setRole(Role.ROLE_USER.name());
+        } else {
+            // Verificar si el rol proporcionado es válido
+            try {
+                Role.valueOf(usuario.getRole());
+            } catch (IllegalArgumentException e) {
+                throw new IllegalArgumentException("Rol inválido: " + usuario.getRole());
+            }
+        }
+        
         return usuarioRepository.save(usuario);
     }
+
 }
