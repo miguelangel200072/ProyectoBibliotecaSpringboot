@@ -23,10 +23,10 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf().disable() // Desactivar CSRF solo para pruebas, no recomendado en producción
+            .csrf().disable()
             .authorizeRequests()
             .requestMatchers("/auth/**").permitAll() // Permitir acceso a las rutas de autenticación
-            .anyRequest().authenticated() // Todas las demás rutas requieren autenticación
+            .anyRequest().authenticated()
             .and()
             .httpBasic().and()
             .logout()
@@ -35,7 +35,7 @@ public class WebSecurityConfig {
             .invalidateHttpSession(true) // Invalidar sesión
             .clearAuthentication(true) // Limpiar autenticación
             .permitAll();
- // Habilitar autenticación básica
+
 
         return http.build();
     }

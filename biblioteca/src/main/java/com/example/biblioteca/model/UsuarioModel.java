@@ -50,7 +50,7 @@ public class UsuarioModel implements UserDetails {
 	@Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         // Devuelve los roles del usuario aquí
-        return null; // Puedes retornar roles si los tienes
+        return null; 
     }
 
     @Override
@@ -83,6 +83,6 @@ public class UsuarioModel implements UserDetails {
         return true; // Lógica de habilitación del usuario
     }
 
-    // Getters y Setters para los campos adicionales
+
 }
 

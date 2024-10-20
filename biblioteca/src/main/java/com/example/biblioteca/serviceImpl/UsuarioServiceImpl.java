@@ -31,7 +31,7 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
         if (usuario == null) {
             throw new UsernameNotFoundException("Usuario no encontrado: " + username);
         }
-        return usuario; // Asegúrate de que UsuarioModel implemente UserDetails
+        return usuario;
     }
 
 
